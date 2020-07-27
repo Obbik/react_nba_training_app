@@ -1,0 +1,17 @@
+.teaminfo {
+  font-size: 11px;
+}
+
+.teaminfo i {
+  margin-right: 5px;
+}
+.teamname {
+  margin-right: 7px;
+  background-color: #d1d1d1;
+  color: white;
+
+  padding: 2px 5px;
+}
+.date {
+  color: #2196f3;
+}

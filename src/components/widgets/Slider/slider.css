@@ -16,8 +16,9 @@
   background-repeat: no-repeat !important;
 }
 
-.featured_caption {
+.featued_caption {
   color: #ffffff;
+  text-align: center;
   top: 0px;
   width: 100%;
   padding: 20px;
