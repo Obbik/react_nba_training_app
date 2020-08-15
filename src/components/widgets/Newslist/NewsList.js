@@ -3,9 +3,12 @@ import React, { Component } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { Link } from "react-router-dom";
 
-import axios from "axios";
 import styles from "./newslist.css";
-import { URL } from "../../../config";
+import {
+  firebaseTeams,
+  firebaseArticles,
+  firebaseLooper,
+} from "../../../firebase";
 
 import Button from "../button/button";
 import TeamName from "../teaminfo/teaminfo";
@@ -25,26 +28,40 @@ class NewsList extends Component {
 
   request = (start, end) => {
     if (this.state.teams.length < 1) {
-      axios.get(`${URL}/teams`).then((res) => {
+      firebaseTeams.once("value").then((snapshot) => {
+        const teams = firebaseLooper(snapshot);
         this.setState({
-          teams: res.data,
+          teams,
         });
       });
     }
-
-    axios.get(`${URL}/articles?_start=${start}&_end=${end}`).then((res) => {
-      this.setState({
-        items: [...this.state.items, ...res.data],
-        start,
-        end,
+    firebaseArticles
+      .orderByChild("id")
+      .startAt(start)
+      .endAt(end)
+      .once("value")
+      .then((snapshot) => {
+        const articles = firebaseLooper(snapshot);
+        this.setState({
+          items: [...this.state.items, ...articles],
+          start,
+          end,
+        });
       });
-    });
   };
+  //   axios.get(`${URL}/articles?_start=${start}&_end=${end}`).then((res) => {
+  //     this.setState({
+  //       items: [...this.state.items, ...res.data],
+  //       start,
+  //       end,
+  //     });
+  //   });
+  // };
 
   loadmore = () => {
     let end = this.state.end + this.state.amount;
-    console.log(this.state.end, end);
-    this.request(this.state.end, end);
+
+    this.request(this.state.end +   1, end);
   };
   renderNews = (type) => {
     let template = null;

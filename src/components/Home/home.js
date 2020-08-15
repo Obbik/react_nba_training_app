@@ -7,7 +7,7 @@ const Home = () => {
     <div>
       <Slider />
 
-      {/* <NewsList type="card" loadmore={true} start={3} amount={3} />
+      <NewsList type="card" loadmore={true} start={3} amount={3} />
 
       <VideosList
         type="card"
@@ -15,7 +15,7 @@ const Home = () => {
         loadmore={false}
         start={0}
         amount={3}
-      /> */}
+      />
     </div>
   );
 };

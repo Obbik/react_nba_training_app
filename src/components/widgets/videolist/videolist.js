@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import styles from "./videolist.css";
 
-import axios from "axios";
-import { URL } from "../../../config";
+import {
+  firebaseTeams,
+  firebaseArticles,
+  firebaseLooper,
+} from "../../../firebase";
 import Button from "../button/button";
 
 import VideosLists from "./videoListTemplate";
@@ -41,21 +44,47 @@ class VideosList extends Component {
 
   request = (start, end) => {
     if (this.state.teams.length < 1) {
-      axios
-        .get(`${URL}/teams`)
-
-        .then((res) => {
-          this.setState({ teams: res.data });
+      firebaseTeams.once("value").then((snapshot) => {
+        const teams = firebaseLooper(snapshot);
+        this.setState({
+          teams,
         });
-    }
-    axios.get(`${URL}/videos?_start=${start}&_end=${end}`).then((res) => {
-      this.setState({
-        videos: [...this.state.videos, ...res.data],
-        start,
-        end,
       });
-    });
+    }
+    firebaseArticles
+      .orderByChild("id")
+      .startAt(start)
+      .endAt(end)
+      .once("value")
+      .then((snapshot) => {
+        const videos = firebaseLooper(snapshot);
+        this.setState({
+          videos: [...this.state.videos, ...videos],
+          start,
+          end,
+        });
+      });
   };
+
+  //     .catch((e) => {
+  //       console.log(e);
+  //     });
+  // };
+
+  //     axios
+  //       .get(`${URL}/teams`)
+
+  //       .then((res) => {
+  //         this.setState({ teams: res.data });
+  //       });
+  //   }
+  //   axios.get(`${URL}/videos?_start=${start}&_end=${end}`).then((res) => {
+  //     this.setState({
+  //       videos: [...this.state.videos, ...res.data],
+  //       start,
+  //       end,
+  //     });
+  //   });
 
   render() {
     return (

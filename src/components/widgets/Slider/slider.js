@@ -13,14 +13,7 @@ class Slider extends Component {
       .limitToFirst(3)
       .once("value")
       .then((snapshot) => {
-        const news = [];
-        snapshot.forEach((childSnapshot) => {
-          news.push({
-            ...childSnapshot.val(),
-            id: childSnapshot.key,
-          });
-        });
-
+        const news = firebaseLooper(snapshot);
         this.setState({
           news,
         });
